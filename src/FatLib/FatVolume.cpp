@@ -494,6 +494,7 @@ bool FatVolume::init(uint8_t part) {
     DBG_FAIL_MACRO;
     goto fail;
   }
+  m_fatCount = fbs->fatCount;
   m_blocksPerCluster = fbs->sectorsPerCluster;
   m_clusterBlockMask = m_blocksPerCluster - 1;
   // determine shift that is same as multiply by m_blocksPerCluster
@@ -513,7 +514,7 @@ bool FatVolume::init(uint8_t part) {
   m_rootDirEntryCount = fbs->rootDirEntryCount;
 
   // directory start for FAT16 dataStart for FAT32
-  m_rootDirStart = m_fatStartBlock + fbs->fatCount * m_blocksPerFat;
+  m_rootDirStart = m_fatStartBlock + m_fatCount * m_blocksPerFat;
   // data start for FAT16 and FAT32
   m_dataStartBlock = m_rootDirStart + ((32 * fbs->rootDirEntryCount + 511)/512);
 
@@ -577,7 +578,7 @@ bool FatVolume::wipe(print_t* pr) {
     }
   }
   // Clear FATs.
-  count = fbs->fatCount*m_blocksPerFat;
+  count = m_fatCount * m_blocksPerFat;
   lbn = m_fatStartBlock;
   for (uint32_t nb = 0; nb < count; nb++) {
     if (pr && (nb & 0XFF) == 0) {
@@ -602,7 +603,7 @@ bool FatVolume::wipe(print_t* pr) {
     goto fail;
   }
   if (!writeBlock(m_fatStartBlock, cache->data) ||
-      (fbs->fatCount == 2 && !writeBlock(m_fatStartBlock + m_blocksPerFat, cache->data))) {
+      (m_fatCount == 2 && !writeBlock(m_fatStartBlock + m_blocksPerFat, cache->data))) {
     DBG_FAIL_MACRO;
     goto fail;
   }
