@@ -21,6 +21,7 @@ install:
     - git clone --quiet http://github.com/jrowberg/i2cdevlib.git $HOME/i2cdevlib
     - mv $HOME/i2cdevlib/Arduino/* $HOME/Arduino/libraries/
     - rm -rf $HOME/arduino_ide/libraries/Adafruit_Test_Library/examples/*attic
+    - rm -rf $HOME/arduino_ide/libraries/Adafruit_Test_Library/extras
 
 script:
   - build_main_platforms
