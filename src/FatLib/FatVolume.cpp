@@ -552,6 +552,8 @@ bool FatVolume::wipe(print_t* pr) {
   cache_t* cache;
   uint16_t count;
   uint32_t lbn;
+  uint8_t fatCount = 2; // should be fbs->fatCount or based on size of flash!
+
   if (!fatType()) {
     DBG_FAIL_MACRO;
     goto fail;
@@ -577,7 +579,8 @@ bool FatVolume::wipe(print_t* pr) {
     }
   }
   // Clear FATs.
-  count = fbs->fatCount*m_blocksPerFat;
+
+  count = fatCount*m_blocksPerFat;
   lbn = m_fatStartBlock;
   for (uint32_t nb = 0; nb < count; nb++) {
     if (pr && (nb & 0XFF) == 0) {
@@ -602,7 +605,7 @@ bool FatVolume::wipe(print_t* pr) {
     goto fail;
   }
   if (!writeBlock(m_fatStartBlock, cache->data) ||
-      (fbs->fatCount == 2 && !writeBlock(m_fatStartBlock + m_blocksPerFat, cache->data))) {
+      (fatCount == 2 && !writeBlock(m_fatStartBlock + m_blocksPerFat, cache->data))) {
     DBG_FAIL_MACRO;
     goto fail;
   }
