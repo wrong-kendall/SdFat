@@ -114,7 +114,7 @@ void loop() {
         break;
 
       case 3:
-        file.printField(12345678UL + i, '\n');
+        file.printField((uint32_t) (12345678UL + i), '\n');
         break;
 
       case 4:
