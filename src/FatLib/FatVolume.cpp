@@ -55,7 +55,7 @@ bool FatCache::sync() {
       goto fail;
     }
     // mirror second FAT
-    if (m_status & CACHE_STATUS_MIRROR_FAT) {
+    if ( (m_vol->m_fatCount == 2) && (m_status & CACHE_STATUS_MIRROR_FAT) ) {
       uint32_t lbn = m_lbn + m_vol->blocksPerFat();
       if (!m_vol->writeBlock(lbn, m_block.data)) {
         DBG_FAIL_MACRO;
