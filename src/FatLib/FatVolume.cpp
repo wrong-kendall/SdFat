@@ -553,8 +553,6 @@ bool FatVolume::wipe(print_t* pr) {
   cache_t* cache;
   uint16_t count;
   uint32_t lbn;
-  uint8_t fatCount = 2; // should be fbs->fatCount or based on size of flash!
-
   if (!fatType()) {
     DBG_FAIL_MACRO;
     goto fail;
