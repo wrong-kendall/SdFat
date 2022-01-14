@@ -8,6 +8,7 @@ jobs:
       fail-fast: false
       matrix:
         arduino-platform:
+          - 'feather_rp2040'
           - 'metro_m0'
           - 'metro_m4'
           - 'nrf52840'
