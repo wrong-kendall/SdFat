@@ -36,6 +36,10 @@
 #include "FatApiConstants.h"
 #include "FatStructs.h"
 #include "FatVolume.h"
+#ifdef SDFAT_USE_STD_FUNCTION
+#include <functional>
+#endif
+
 class FatFileSystem;
 //------------------------------------------------------------------------------
 // Stuff to store strings in AVR flash.
@@ -285,14 +289,21 @@ class FatFile {
    *
    * See the timestamp() function.
    */
-  static void dateTimeCallback(
-    void (*dateTime)(uint16_t* date, uint16_t* time)) {
-    m_dateTime = dateTime;
-  }
   /**  Cancel the date/time callback function. */
   static void dateTimeCallbackCancel() {
     m_dateTime = 0;
   }
+#ifndef SDFAT_USE_STD_FUNCTION
+  static void dateTimeCallback(
+    void (*dateTime)(uint16_t* date, uint16_t* time)) {
+    m_dateTime = dateTime;
+  }
+#else
+  static void dateTimeCallback(
+     std::function<void(uint16_t *date, uint16_t *time)> dateTime) {
+    m_dateTime = dateTime;
+  }
+#endif
   /** Return a file's directory entry.
    *
    * \param[out] dir Location for return of the file's directory entry.
@@ -1012,7 +1023,11 @@ class FatFile {
   // global pointer to cwd dir
   static FatFile* m_cwd;
   // data time callback function
+#ifndef SDFAT_USE_STD_FUNCTION
   static void (*m_dateTime)(uint16_t* date, uint16_t* time);
+#else
+   static std::function<void(uint16_t *date, uint16_t *time)> m_dateTime;
+#endif
   // private data
   static const uint8_t WRITE_ERROR = 0X1;
   static const uint8_t READ_ERROR  = 0X2;

@@ -27,8 +27,13 @@
 //------------------------------------------------------------------------------
 // Pointer to cwd directory.
 FatFile* FatFile::m_cwd = 0;
+
+#ifndef SDFAT_USE_STD_FUNCTION
 // Callback function for date/time.
 void (*FatFile::m_dateTime)(uint16_t* date, uint16_t* time) = 0;
+#else
+std::function<void(uint16_t* date, uint16_t* time)> FatFile::m_dateTime = 0;
+#endif
 //------------------------------------------------------------------------------
 // Add a cluster to a file.
 bool FatFile::addCluster() {
